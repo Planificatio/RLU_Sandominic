@@ -77,8 +77,8 @@
     		border-radius: 2px;
     		z-index: 1000;
     		overflow: hidden;
-    		width: 20px;
-    		height: 20px;
+    		width: 24px;
+    		height: 24px;
     		display: flex;
     		align-items: center;
     		justify-content: center;
@@ -86,32 +86,40 @@
 		}
 
 		#demo-widget:hover {
-    		width: 100px;
-    		height: 30px;
+    		width: 110px;
+    		height: 36px;
+			background-color: rgba(255, 255, 255, 0.95);
+    		border-radius: 4px;
+			padding: 0;
 		}
 		
 		#demo-icon {
-    		font-size: 24px;
-    		font-weight: bold;
-    		font-family: sans-serif;
+    		width: 24px;
+    		height: 24px;
 		}
 
 		#show-demo-btn {
             display: none;
-			width: 90px;
-    		height: 25px;
-			border: 0px;
-			font-size: 12px;
-    		font-family: sans-serif;
+            width: 100%;
+            height: 100%;
+            border: none;
+            font-size: 14px;
+            font-family: 'Arial', sans-serif;
+            background-color: #007bff;
+            color: white;
+            border-radius: 4px;
+            text-align: center;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
 		}
 
 		#demo-widget:hover #show-demo-btn {
-    		display: inline-block;
+    		display: flex;
 		}
 		
 		#demo-widget:hover #demo-icon {
-    		opacity: 0;
-    		pointer-events: none;
+    		display: none;
 		}
 
 		.demo-textbox {
@@ -121,7 +129,12 @@
     		border: 0px solid #ccc;
     		border-radius: 2px;
     		z-index: 1001;
-    		max-width: 300px;
+    		width: 640px;
+			max-height: 80%;
+			left: 50%;
+    		top: 50%;
+    		transform: translate(-50%, -50%);
+			font-size: 15px;
 		}
 		
 		#map.darkened {
@@ -150,9 +163,7 @@
 
 		.widget-highlight {
     		z-index: 1001;
-    		position: relative;
     		background-color: rgba(255, 255, 255, 1.0);
-    		box-shadow: 0 0 10px 5px rgba(255, 255, 255, 0.8);
     		transition: background-color 0.3s ease, box-shadow 0.3s ease;
 			opacity: 1.0;
 		}
@@ -166,7 +177,7 @@
     		align-items: center;
     		z-index: 1001;
 		}
-
+		
 		.nav-btn, .end-btn {
     		background: rgba(255, 255, 255, 0.8);
     		border: 1px solid #ccc;
@@ -191,6 +202,12 @@
 			background: white;
         }
 		
+		.nav-btn-disabled {
+    		pointer-events: none; /* Disable interaction */
+    		opacity: 0.5; /* Dim the button to indicate it's disabled */
+    		cursor: default; /* Change cursor to default to indicate it's not clickable */
+		}
+		
 		.end-btn {
     		margin-left: 20px;
     		background: rgba(255, 0, 0, 0.8);
@@ -205,12 +222,12 @@
     <body>
         <div id="map" style="z-index:1;">
         </div>
-		<div class="language-widget widget">
+		<div class="language-widget widget" id="language-widget">
             <img src="images/ro.png" class="language-icon" id="romanian-flag" title="Română" />
             <img src="images/hu.png" class="language-icon" id="hungarian-flag" title="Magyar" />
         </div>
 		<div id="demo-widget" class="widget">
-    		<span id="demo-icon">&#63;</span> <!-- Question mark symbol as the icon -->
+    		<img id="demo-icon" src="images/demo/demo-icon.svg" alt="Demo Icon">
     		<button id="show-demo-btn">Show Demo</button>
 		</div>
 		<div id="demo-nav" style="display:none;">
@@ -795,15 +812,18 @@
 		});
 
 		var demoSteps = [
-    		{ text: "A két gomb segítségével vagy az egér görgőjével közelíthet, illetve kicsinyítheti a térképet.", position: [0, 0], widgetId: "zoom-widget" },
-    		{ text: "A térkép teljes képernyő módba helyezése.", position: [0, 0], widgetId: "fullscreen-widget" },
-			{ text: "Rajzoló eszköztár. Jelölő elhelyezése. Vonal rajzolása. Felület rajzolása. Kör rajzolása. Hamarabb a kör középpontját helyezzük el, majd a következő kattintással határozzuk meg a kör kiterjedését. Szöveg beszúrása.", position: [50, 225], widgetId: "drawing-widget" },
-			{ text: "Szerkesztő eszköztár. Rajzolt elemek módosítása. Rajzolt elemek mozgatása. Rajzolt elemek vágása. Rajzolt elemek törlése.", position: [50, 390], widgetId: "editing-widget"  },
-			{ text: "Mérés.", position: [50, 570], widgetId: "measure-widget" },
-			{ text: "Térkép nyomtatása.", position: [50, 570], widgetId: "print-widget" },
-			{ text: "Nyelv választása.", position: [1400, 10], widgetId: "language-widget" },
-			{ text: "Elérhető rétegek. Alaptérkép választása. Jelmagyarázat. Rétegek átlátszóságának beállítása.", position: [1400, 50], widgetId: "layers-widget" },
-			{ text: "Élő helyzetmeghatározás. Csak akkor működik, ha jelenlegi helyzetünk a térkép keretein belül van.", position: [1400, 100], widgetId: "locate-widget" }
+    		{ text: "A két gomb segítségével vagy az egér görgőjével közelíthet, illetve kicsinyítheti a térképet.", widgetId: "zoom-widget" },
+    		{ text: "A térkép teljes képernyő módba helyezése.", widgetId: "fullscreen-widget" },
+			{ text: "Rajzoló eszköztár. Jelölő elhelyezése. Vonal rajzolása. Felület rajzolása. Kör rajzolása. Hamarabb a kör középpontját helyezzük el, majd a következő kattintással határozzuk meg a kör kiterjedését. Szöveg beszúrása.", widgetId: "drawing-widget" },
+			{
+			    text: 'Szerkesztő eszköztár. Rajzolt elemek módosítása. Rajzolt elemek mozgatása. Rajzolt elemek vágása. Rajzolt elemek törlése.<br><br><img src="images/demo/text_gif.gif" alt="Text GIF">',
+				widgetId: "editing-widget"
+			},
+			{ text: "Mérés.", widgetId: "measure-widget" },
+			{ text: "Térkép nyomtatása.", widgetId: "print-widget" },
+			{ text: "Nyelv választása.", widgetId: "language-widget" },
+			{ text: "Elérhető rétegek. Alaptérkép választása. Jelmagyarázat. Rétegek átlátszóságának beállítása.", widgetId: "layers-widget" },
+			{ text: "Élő helyzetmeghatározás. Csak akkor működik, ha jelenlegi helyzetünk a térkép keretein belül van.", widgetId: "locate-widget" }
 		];
 
 		var currentStep = 0;
@@ -812,11 +832,24 @@
 		    document.getElementById('demo-nav').style.display = 'flex';
     		showStep(currentStep);
 		}
+		
+		function endDemo() {
+    		removeTextbox();
+
+    		// Hide navigation buttons
+    		var demoNav = document.getElementById('demo-nav');
+    		if (demoNav) {
+        		demoNav.style.display = 'none';
+    		}
+
+    		currentStep = 0; // Reset the step for the next time the demo is started
+		}
 
 		function showStep(stepIndex) {
+		    removeTextbox();
+			
     		if (stepIndex >= demoSteps.length) {
-        		removeTextbox(); // End the demo
-				map.getContainer().classList.remove('darkened');
+        		endDemo();
         		return;
     		}
 
@@ -832,8 +865,9 @@
     		});
 			
 			var widgetToHighlight = document.querySelector(`#${step.widgetId}`);
+			
     		if (widgetToHighlight) {
-			// Remove highlight from the previously highlighted widget, if any
+			// Remove highlight from the previously highlighted widget
                 var previouslyHighlighted = document.querySelector('.widget-highlight');
                 if (previouslyHighlighted) {
                     previouslyHighlighted.classList.remove('widget-highlight');
@@ -843,8 +877,33 @@
         		widgetToHighlight.classList.add('widget-highlight');
         		widgetToHighlight.classList.remove('widget-darkened');
 			}
+			
+			// Special handling for specific toolbars
+    		if (step.widgetId === "drawing-widget" || step.widgetId === "editing-widget") {
+        		var toolbar = document.querySelector(`#${step.widgetId} .leaflet-pm-toolbar`);
+        		if (toolbar) {
+            		toolbar.classList.remove('widget-darkened');
+            		toolbar.classList.add('widget-highlight');
+        		}
+    		}
 
     		map.getContainer().appendChild(textbox);
+			
+			// Update navigation button states
+    		var prevBtn = document.getElementById('prev-btn');
+    		var nextBtn = document.getElementById('next-btn');
+
+    		if (stepIndex === 0) {
+        		prevBtn.classList.add('nav-btn-disabled');
+    		} else {
+        		prevBtn.classList.remove('nav-btn-disabled');
+    		}
+
+    		if (stepIndex === demoSteps.length - 1) {
+        		nextBtn.classList.add('nav-btn-disabled');
+    		} else {
+        		nextBtn.classList.remove('nav-btn-disabled');
+    		}
 
 		}
 
@@ -853,15 +912,19 @@
     		textbox.className = 'demo-textbox';
     		textbox.innerHTML = text;
 			
-		    var windowWidth = window.innerWidth;
-    	    var windowHeight = window.innerHeight;
-
-    	    var textboxWidth = 300;
-    	    var textboxHeight = 100;
-
-    	    // Set the position to the center of the window
-    	    textbox.style.left = (windowWidth / 2 - textboxWidth / 2) + 'px';
-    	    textbox.style.top = (windowHeight / 2 - textboxHeight / 2) + 'px';
+			// Add the textbox to the DOM temporarily to measure its size
+    		document.body.appendChild(textbox);
+			
+			textbox.offsetHeight;
+			
+			var mapHeight = window.innerHeight;
+    		var maxHeight = mapHeight * 0.8;
+			
+			// Check if the textbox height exceeds the maximum height
+    		if (textbox.offsetHeight > maxHeight) {
+        		textbox.style.height = maxHeight + 'px';
+        		textbox.style.overflowY = 'auto'; // Make content scrollable if it exceeds maxHeight
+    		}
 			
     		return textbox;
 		}
@@ -885,9 +948,6 @@
     		if (highlightedWidget) {
         		highlightedWidget.classList.remove('widget-highlight');
     		}
-			
-			// Hide navigation buttons
-    		document.getElementById('demo-nav').style.display = 'none';
 		}
 		
 		// Add event listeners for the navigation buttons
@@ -906,7 +966,7 @@
 		});
 
 		document.getElementById('end-btn').addEventListener('click', function() {
-    		removeTextbox();
+    		endDemo();
 		});
 		
 
